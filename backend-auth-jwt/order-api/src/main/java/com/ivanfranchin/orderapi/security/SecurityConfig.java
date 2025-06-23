@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/public/**", "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll()
+                        .requestMatchers("/ws/**", "/ws/info/**", "/ws/**/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs",
                                 "/v3/api-docs/**")
@@ -52,7 +54,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(
                         sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable) // 🔒 Disable CSRF globally since you're using JWTs
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/ws/**"))// 🔒 Disable CSRF globally since you're using JWTs
                 // Allow CSRF only for h2-console
                 .headers(headers -> headers
                         .frameOptions(frame -> frame

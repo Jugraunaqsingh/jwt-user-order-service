@@ -9,9 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -22,18 +19,20 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (!userService.getUsers().isEmpty()) {
-            return;
-        }
-        USERS.forEach(user -> {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userService.saveUser(user);
-        });
-        log.info("Database initialized");
-    }
+        // Always ensure admin user exists
+        String adminUsername = "adminraunaq";
+        if (!userService.hasUserWithUsername(adminUsername)) {
+            User adminUser = new User();
+            adminUser.setUsername(adminUsername);
+            adminUser.setPassword(passwordEncoder.encode("admin"));
+            adminUser.setName("Admin");
+            adminUser.setEmail("admin@mycompany.com");
+            adminUser.setRole(SecurityConfig.ADMIN);
 
-    private static final List<User> USERS = Arrays.asList(
-            new User("admin", "admin", "Admin", "admin@mycompany.com", SecurityConfig.ADMIN),
-            new User("user", "user", "User", "user@mycompany.com", SecurityConfig.USER)
-    );
+            userService.saveUser(adminUser);
+            log.info("Default admin user created.");
+        } else {
+            log.info("Admin user already exists.");
+        }
+    }
 }
