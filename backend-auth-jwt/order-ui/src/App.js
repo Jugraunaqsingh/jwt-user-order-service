@@ -9,6 +9,8 @@ import Login from './components/home/Login'
 import Signup from './components/home/Signup'
 import AdminPage from './components/admin/AdminPage'
 import UserPage from './components/user/UserPage'
+import ChatRoom from './components/chat/ChatRoom'
+
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
           <Route path="/adminpage" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
           <Route path="/userpage" element={<PrivateRoute><UserPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/chat" element={<PrivateRoute> <ChatRoom /></PrivateRoute> } />
         </Routes>
       </Router>
     </AuthProvider>

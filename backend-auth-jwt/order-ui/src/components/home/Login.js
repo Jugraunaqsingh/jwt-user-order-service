@@ -22,29 +22,34 @@ function Login() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     if (!(username && password)) {
-      setIsError(true)
-      return
+      setIsError(true);
+      return;
     }
-
+  
     try {
-      const response = await orderApi.authenticate(username, password)
-      const { accessToken } = response.data
-      const data = parseJwt(accessToken)
-      const authenticatedUser = { data, accessToken }
-
-      Auth.userLogin(authenticatedUser)
-
-      setUsername('')
-      setPassword('')
-      setIsError(false)
+      const response = await orderApi.authenticate(username, password);
+      const { accessToken } = response.data;
+      const data = parseJwt(accessToken); // assumes username is part of JWT payload
+      const authenticatedUser = { data, accessToken };
+  
+      // ✅ Save to auth context
+      Auth.userLogin(authenticatedUser);
+  
+      // ✅ Also store the username in localStorage for ChatRoom use
+      localStorage.setItem("username", data.sub); // or data.name, depending on your token payload
+  
+      setUsername('');
+      setPassword('');
+      setIsError(false);
     } catch (error) {
-      handleLogError(error)
-      setIsError(true)
+      handleLogError(error);
+      setIsError(true);
     }
-  }
+  };
+  
 
   if (isLoggedIn) {
     return <Navigate to={'/'} />

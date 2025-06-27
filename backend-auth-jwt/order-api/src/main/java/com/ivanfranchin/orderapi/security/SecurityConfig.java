@@ -55,7 +55,8 @@ public class SecurityConfig {
                 .sessionManagement(
                         sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/ws/**"))// 🔒 Disable CSRF globally since you're using JWTs
+                        .ignoringRequestMatchers("/auth/**", "/ws/**"))// 🔒 Disable CSRF globally since you're using
+                                                                       // JWTs
                 // Allow CSRF only for h2-console
                 .headers(headers -> headers
                         .frameOptions(frame -> frame
